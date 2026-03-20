@@ -103,9 +103,7 @@ async function playDoorbellSequence(soundPath, state, playTimes) {
  * This value is then passed to teh playDoorbellSequence
  * function
  */
-function getTimes(req) {
-  const countParam = req;
-
+function getTimes(countParam) {
   console.log(`getTimes: Parameter set to ${countParam}`);
 
   // If no parameter, return default

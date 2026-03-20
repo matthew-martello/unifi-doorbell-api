@@ -35,9 +35,9 @@ Optional query parameter:
 
 If the requested file does not exist, or the filename resolves outside `assets/`, the app falls back to `assets/default.mp3`.
 
-- `count`: sets the number of times to play the sound file. The can be used independently, for example `?count=1` or in conjunction with the `sound` parameter, like so `?sound=chime.mp3&count=3`
+- `count`: sets the number of times to play the sound file. This can be used independently, for example `?count=1` or in conjunction with the `sound` parameter, like so `?sound=chime.mp3&count=3`
 
-If the value is not included teh file will be played twice.
+If the value is not included the file will be played twice.
 
 Response when playback is started:
 
