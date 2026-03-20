@@ -45,6 +45,10 @@ function getSoundPath(filename) {
   return candidatePath;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 app.get("/health", (req, res) => {
   res.status(200).send("ok");
 });
@@ -54,6 +58,10 @@ app.post("/webhooks/unifi/doorbell", (req, res) => {
     const soundPath = getSoundPath(req.query.sound);
 
     playSound(soundPath);
+    // Wait 3 seconds before playing again
+    setTimeout(() => {
+      playSound(soundPath);
+    }, 3000);
 
     res.status(200).send("ok");
   } catch (err) {
