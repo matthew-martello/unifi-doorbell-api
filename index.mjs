@@ -20,6 +20,9 @@ const playbackState = { isPlaying: false };
 // Number of seconds to wait before playing the second ring.
 const REPEAT_SECONDS = 1;
 
+/** Console log */
+console.log("App starting...");
+
 /** Get the asset path for a requested filename.
  *
  * Only plain filenames inside the local `assets` directory are accepted. Any
