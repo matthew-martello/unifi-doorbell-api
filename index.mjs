@@ -102,7 +102,7 @@ async function playDoorbellSequence(soundPath, state, playTimes) {
  * function
  */
 function getTimes(req) {
-  const countParam = req.query.count;
+  const countParam = req.query?.count ?? req.body?.count;
 
   // If no parameter, return default
   if (countParam === undefined) {
