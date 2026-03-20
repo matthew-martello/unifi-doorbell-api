@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 
 const assets = path.join(__dirname, "assets");
 const defaultSound = path.join(assets, "default.mp3");
-const playTimes = 2;
+const defaultPlayTimes = 2;
 
 // Shared in-memory playback state used to suppress overlapping doorbell runs.
 const playbackState = { isPlaying: false };
@@ -107,18 +107,18 @@ function getTimes(req) {
 
   // If no parameter, return default
   if (countParam === undefined) {
-    return playTimes;
+    return defaultPlayTimes;
   }
 
   // Convert to integer
-  const parsed = parseInt(countParam, 10);
+  const playTimes = parseInt(countParam, 10);
 
   // If invalid or <= 0, fall back to default
   if (isNaN(parsed) || parsed <= 0) {
-    return playTimes;
+    return defaultPlayTimes;
   }
 
-  return parsed;
+  return playTimes;
 }
 
 app.get("/health", (req, res) => {
@@ -141,7 +141,7 @@ app.post("/webhooks/unifi/doorbell", (req, res) => {
     }
 
     const soundPath = getSoundPath(req.query.sound);
-    playTimes = getTimes(req.query.count);
+    const playTimes = getTimes(req.query.count);
 
     void playDoorbellSequence(soundPath, playbackState, playTimes).catch(
       (err) => {
