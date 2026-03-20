@@ -1,10 +1,18 @@
+console.log("1. File loaded");
+
 import express from "express";
+console.log("2. Express imported");
+
 import playSound from "./playSound.mjs";
+console.log("3. playSound imported");
+
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const app = express();
+console.log("4. App created");
+
 const port = 3003;
 
 const __filename = fileURLToPath(import.meta.url);
