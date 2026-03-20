@@ -25,7 +25,13 @@ ok
 
 ### `POST /webhooks/unifi/doorbell`
 
-Triggers playback of `assets/default.mp3` on the local machine.
+Triggers playback on the local machine.
+
+Optional query parameter:
+
+- `sound`: filename inside `assets/`, including extension, for example `?sound=chime.mp3`
+
+If the requested file does not exist, or the filename resolves outside `assets/`, the app falls back to `assets/default.mp3`.
 
 Response on success:
 
@@ -42,4 +48,4 @@ Internal server error
 ## Notes
 
 - On macOS, audio playback uses `afplay`.
-- On Linux, audio playback uses `node-aplay` and requires the `aplay` binary to be installed.
+- On Linux, audio playback uses `mplayer`.

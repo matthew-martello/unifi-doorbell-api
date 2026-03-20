@@ -1,50 +1,48 @@
 import express from "express";
-import { spawn } from "node:child_process";
+import playSound from "./playSound.mjs";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import Sound from "node-aplay";
 
 const app = express();
 const port = 3003;
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const assets = path.join(__dirname, "assets");
 const defaultSound = path.join(assets, "default.mp3");
 
-function playSound(filePath) {
-  if (process.platform === "darwin") {
-    console.log("Playing doorbell...");
-    const player = spawn("afplay", [filePath], {
-      detached: true,
-      stdio: "ignore",
-    });
-
-    player.on("error", (error) => {
-      console.error("Failed to play sound with afplay:", error);
-    });
-
-    player.unref();
-    return;
+/** Get the filepath of the `filename` provided.
+ *
+ * @param {string} filename
+ * @returns The filepath of the provided `filename`. If no file is found, return the default sound filepath.
+ */
+function getSoundPath(filename) {
+  if (typeof filename !== "string" || filename.length === 0) {
+    return defaultSound;
   }
 
-  if (process.platform === "linux") {
-    console.log("Playing doorbell with mplayer...");
-    const player = spawn("mplayer", ["-really-quiet", filePath], {
-      detached: true,
-      stdio: "ignore",
-    });
-
-    player.on("error", (error) => {
-      console.error("Failed to play sound with mplayer:", error);
-    });
-
-    player.unref();
-    return;
+  if (path.basename(filename) !== filename) {
+    return defaultSound;
   }
 
-  throw new Error(
-    `Unsupported platform for audio playback: ${process.platform}`,
-  );
+  const candidatePath = path.resolve(assets, filename);
+  const relativePath = path.relative(assets, candidatePath);
+  const isInsideAssets =
+    relativePath !== "" &&
+    !relativePath.startsWith("..") &&
+    !path.isAbsolute(relativePath);
+
+  if (!isInsideAssets || !fs.existsSync(candidatePath)) {
+    return defaultSound;
+  }
+
+  if (!fs.statSync(candidatePath).isFile()) {
+    return defaultSound;
+  }
+
+  return candidatePath;
 }
 
 app.get("/health", (req, res) => {
@@ -53,7 +51,9 @@ app.get("/health", (req, res) => {
 
 app.post("/webhooks/unifi/doorbell", (req, res) => {
   try {
-    playSound(defaultSound);
+    const soundPath = getSoundPath(req.query.sound);
+
+    playSound(soundPath);
 
     res.status(200).send("ok");
   } catch (err) {
