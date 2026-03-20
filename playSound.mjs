@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 
-console.log("Starting app...");
+console.log("playSound.mjs: Starting app...");
 
 /**
  * Play a sound file with the platform-specific CLI player and keep the shared

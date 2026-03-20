@@ -171,6 +171,13 @@ app.post("/webhooks/unifi/doorbell", (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log("Doorbell listening on port", port);
-});
+//app.listen(port, () => {
+app
+  .listen(port)
+  .on("listening", () => {
+    console.log("Doorbell listening on port", port);
+  })
+  .on("error", (err) => {
+    console.error("Failed to start server:", err);
+  });
+//});
