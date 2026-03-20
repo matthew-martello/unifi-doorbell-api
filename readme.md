@@ -25,7 +25,9 @@ ok
 
 ### `POST /webhooks/unifi/doorbell`
 
-Triggers playback on the local machine.
+Triggers doorbell playback on the local machine.
+
+The endpoint plays the selected sound twice, with a 1 second delay between rings. This can changed using the `REPEAT_SECONDS` variable.
 
 Optional query parameter:
 
@@ -33,10 +35,16 @@ Optional query parameter:
 
 If the requested file does not exist, or the filename resolves outside `assets/`, the app falls back to `assets/default.mp3`.
 
-Response on success:
+Response when playback is started:
 
 ```text
 ok
+```
+
+Response when a previous playback sequence is still running:
+
+```text
+already playing
 ```
 
 Response on failure:
