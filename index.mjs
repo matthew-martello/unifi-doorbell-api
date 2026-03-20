@@ -80,6 +80,7 @@ async function playDoorbellSequence(soundPath, state, playTimes) {
   try {
     state.isPlaying = true;
 
+    console.log(`Playing ${playTimes} time(s)`);
     for (let i = 0; i < playTimes; i++) {
       console.log(`Playing ${i + 1}/${playTimes}`);
       await playSound(soundPath, state);
@@ -103,7 +104,9 @@ async function playDoorbellSequence(soundPath, state, playTimes) {
  * function
  */
 function getTimes(req) {
-  const countParam = req.query?.count ?? req.body?.count;
+  const countParam = req;
+
+  console.log(`getTimes: Parameter set to ${countParam}`);
 
   // If no parameter, return default
   if (countParam === undefined) {
@@ -113,8 +116,10 @@ function getTimes(req) {
   // Convert to integer
   const playTimes = parseInt(countParam, 10);
 
+  console.log(`getTimes: Playing ${playTimes} time(s)`);
+
   // If invalid or <= 0, fall back to default
-  if (isNaN(parsed) || parsed <= 0) {
+  if (isNaN(countParam) || countParam <= 0) {
     return defaultPlayTimes;
   }
 

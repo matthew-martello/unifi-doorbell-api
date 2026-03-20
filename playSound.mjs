@@ -27,8 +27,8 @@ export default function playSound(filePath, state) {
     } else {
       reject(
         new Error(
-          `Unsupported platform for audio playback: ${process.platform}`
-        )
+          `Unsupported platform for audio playback: ${process.platform}`,
+        ),
       );
       return;
     }
