@@ -1,5 +1,7 @@
 import { spawn } from "node:child_process";
 
+console.log("Starting app...");
+
 /**
  * Play a sound file with the platform-specific CLI player and keep the shared
  * playback state in sync with the spawned process lifecycle.
