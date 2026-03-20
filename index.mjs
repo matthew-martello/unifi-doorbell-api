@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const assets = path.join(__dirname, "assets");
-const defaultSound = path.join(assets, "default.mp3");
+const defaultSound = path.join(assets, "SomeoneAtTheDoor.mp3");
 
 /** Get the filepath of the `filename` provided.
  *
