@@ -72,18 +72,52 @@ function sleep(ms) {
  *
  * @param {string} soundPath Absolute path to the audio file to play.
  * @param {{ isPlaying: boolean }} state Mutable shared playback state.
+ * @param {BigInteger} playTimes Number of times to play the sound.
  * @returns {Promise<void>} Resolves when both playback attempts have finished.
  */
-async function playDoorbellSequence(soundPath, state) {
+async function playDoorbellSequence(soundPath, state, playTimes) {
   try {
     state.isPlaying = true;
-    await playSound(soundPath, state);
-    state.isPlaying = true;
-    await sleep(REPEAT_SECONDS * 1000);
-    await playSound(soundPath, state);
+
+    for (let i = 0; i < playTimes; i++) {
+      console.log(`Playing ${i + 1}/${playTimes}`);
+      await playSound(soundPath, state);
+
+      // Don't wait after the last play
+      if (i < playTimes - 1) {
+        await sleep(REPEAT_SECONDS * 1000);
+      }
+    }
   } finally {
     state.isPlaying = false;
   }
+}
+
+/** Set a playTimes parameter to 2 by default
+ *
+ * If the `count` parameter is passed in the webhook call
+ * set the parameter to the new value.
+ *
+ * This value is then passed to teh playDoorbellSequence
+ * function
+ */
+function getTimes(req) {
+  const countParam = req.query.count;
+
+  // If no parameter, return default
+  if (countParam === undefined) {
+    return playTimes;
+  }
+
+  // Convert to integer
+  const parsed = parseInt(countParam, 10);
+
+  // If invalid or <= 0, fall back to default
+  if (isNaN(parsed) || parsed <= 0) {
+    return playTimes;
+  }
+
+  return parsed;
 }
 
 app.get("/health", (req, res) => {
@@ -106,10 +140,14 @@ app.post("/webhooks/unifi/doorbell", (req, res) => {
     }
 
     const soundPath = getSoundPath(req.query.sound);
+    const playTimes = 2;
+    playTimes = getTimes(req.query.count);
 
-    void playDoorbellSequence(soundPath, playbackState).catch((err) => {
-      console.error(err);
-    });
+    void playDoorbellSequence(soundPath, playbackState, playTimes).catch(
+      (err) => {
+        console.error(err);
+      },
+    );
 
     res.status(200).send("ok");
   } catch (err) {
