@@ -28,13 +28,22 @@ function playSound(filePath) {
   }
 
   if (process.platform === "linux") {
-    console.log("Playing doorbell...");
-    new Sound(filePath).play();
+    console.log("Playing doorbell with mplayer...");
+    const player = spawn("mplayer", ["-really-quiet", filePath], {
+      detached: true,
+      stdio: "ignore",
+    });
+
+    player.on("error", (error) => {
+      console.error("Failed to play sound with mplayer:", error);
+    });
+
+    player.unref();
     return;
   }
 
   throw new Error(
-    `Unsupported platform for audio playback: ${process.platform}`
+    `Unsupported platform for audio playback: ${process.platform}`,
   );
 }
 
