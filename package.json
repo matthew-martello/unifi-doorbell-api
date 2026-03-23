@@ -7,11 +7,14 @@
   "type": "module",
   "main": "index.mjs",
   "scripts": {
+    "generate:token": "node scripts/generateAccessToken.mjs",
     "start": "node index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "dotenv": "^16.6.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
     "node-aplay": "^1.0.3"
   }
 }

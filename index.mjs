@@ -10,6 +10,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { verifyAccessToken } from "./middleware/verifyAccessToken.js";
+
 const app = express();
 console.log("4. App created");
 
@@ -147,7 +149,7 @@ app.get("/health", (req, res) => {
  * While a sequence is already running, the endpoint returns early with
  * `"already playing"` so repeated webhook calls do not overlap.
  */
-app.post("/webhooks/unifi/doorbell", (req, res) => {
+app.post("/webhooks/unifi/doorbell", verifyAccessToken, (req, res) => {
   try {
     if (playbackState.isPlaying) {
       res.status(200).send("already playing");
@@ -160,7 +162,7 @@ app.post("/webhooks/unifi/doorbell", (req, res) => {
     void playDoorbellSequence(soundPath, playbackState, playTimes).catch(
       (err) => {
         console.error(err);
-      },
+      }
     );
 
     res.status(200).send("ok");

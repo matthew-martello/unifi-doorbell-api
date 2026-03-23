@@ -3,3 +3,5 @@ node_modules/
 # Only track default sound
 assets/*
 !assets/default.mp3
+
+.env
